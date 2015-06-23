@@ -51,7 +51,7 @@ class S
         string line;
         string[] arr = new string[10];
         int i = 0;
-        using (System.IO.StreamReader file = new System.IO.StreamReader(@".\Primes10000.txt"))
+        using (System.IO.StreamReader file = new System.IO.StreamReader(@"..\Data\Primes10000.data"))
         {
             while ((line = file.ReadLine()) != null)
             {
