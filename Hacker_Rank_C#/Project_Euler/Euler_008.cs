@@ -58,60 +58,56 @@ class S
 
         byte[] arrBytes = StringToByteArray(s);
 
-        long prod = 0;
-        long max_prod = 0;
-        //int pos = 0;
-        //string sNums = "";
-        int first = 0;
+        long prod = 0, max_prod = 0;
+        int head = 0, tail=0;
 
-        for (int i = 0; i <= (arrBytes.Length-sample_len); i++)
+        for (int i = 0; i < arrBytes.Length; i++)
         {
-            if (arrBytes[i] == 0)
+            tail = i;
+            head = tail + sample_len -1;
+            if (head >= arrBytes.Length)
+                break;
+
+            if (arrBytes[tail] == 0)
             {
                 prod = 0;
-                first = 0;
                 continue;
             }
             
-            //first = arrBytes[(i==0)?0:i-1];
-            first = (first == 0) ? arrBytes[i] : arrBytes[(i == 0) ? 0 : i - 1];
 
-            Trace.WriteLine("First = " + first.ToString() + " arr[" + i.ToString() + "] = " + arrBytes[i].ToString());
+            //Trace.WriteLine("First = " + first.ToString() + " arr[" + i.ToString() + "] = " + arrBytes[i].ToString());
 
             if (prod == 0)
             {
-                for (; i < sample_len; i++)
+                for (int j = tail; j <= head; j++)
                 {
-                    if (arrBytes[i] == 0)
+                    if (arrBytes[j] == 0)
                     {
-                        first = 0;
                         prod = 0;
-                        i++;
-                        break;
+                        continue;
                     }
-                    if (prod == 0) 
+                    if (prod == 0)
                         prod = 1;
-                    prod *= arrBytes[i];
+                    prod *= arrBytes[j];
                 }
             }
             else
             {
-                if (arrBytes[i + sample_len-1] == 0)
+                //Trace.Write("Prev Prod = " + prod.ToString());
+                if (arrBytes[head] == 0)
                 {
+                    i = head;
                     prod = 0;
-                    i += (sample_len + 1);
-                    break;
+                    continue;
                 }
-                Trace.Write("Prev Prod = " + prod.ToString());
-                prod /= first;
-                prod *= arrBytes[i + sample_len-1];
-                Trace.WriteLine(" /=" + first.ToString() + " *= " + arrBytes[i + sample_len-1].ToString() + " = " + prod.ToString());
+                prod  = prod/arrBytes[tail-1]*arrBytes[head];
+                //Trace.WriteLine(" /=" + first.ToString() + " *= " + arrBytes[i + sample_len-1].ToString() + " = " + prod.ToString());
             }
 
             if (prod > max_prod)
             {
                 max_prod = prod;
-                Trace.WriteLine(" New Max Prod " + prod.ToString());
+                //Trace.WriteLine(" New Max Prod " + prod.ToString());
                 //pos = i;
                 //sNums = string.Format("{0} {1} {2} {3} {4}", arrBytes[i], arrBytes[i + 1], arrBytes[i + 2], arrBytes[i + 3], arrBytes[i + 4]);
             }
@@ -121,20 +117,35 @@ class S
 
     }
 
-    static void Main()
+    static void Main(string[] args)
     {
         //1≤T≤100 
         //1≤K≤7 
         //K≤N≤1000
-        for (int TestCases = int.Parse(C.ReadLine()); TestCases--> 0;)
+        string sTestCase = "1234567890";
+        string L1;
+        string[] sArr = null;
+        int N, K = 5;
+        long prod;
+
+        if (args.Length == 0)
         {
-            string L1 = C.ReadLine();
-            string[] sArr = L1.Split(' ');
-            int N = int.Parse(sArr[0]);
-            int K = int.Parse(sArr[1]);
-            string sTestCase = C.ReadLine();
-            long prod = GetProduct2(sTestCase, K);
+            prod = GetProduct2(sTestCase, K);
             C.WriteLine(prod);
+
+        }
+        else
+        {
+            for (int TestCases = int.Parse(C.ReadLine()); TestCases-- > 0; )
+            {
+                L1 = C.ReadLine();
+                sArr = L1.Split(' ');
+                N = int.Parse(sArr[0]);
+                K = int.Parse(sArr[1]);
+                sTestCase = C.ReadLine();
+                prod = GetProduct2(sTestCase, K);
+                C.WriteLine(prod);
+            }
         }
         C.ReadLine();
     }
